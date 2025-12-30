@@ -1,0 +1,64 @@
+[
+  {
+    "ContainingType": "ShellyReceiver.Controllers.EstadisticasController",
+    "Method": "Dia",
+    "RelativePath": "api/Estadisticas/dia",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dispositivo",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "fechaInicio",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "fechaFin",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ShellyReceiver.Controllers.ShellyController",
+    "Method": "Obtener24Horas",
+    "RelativePath": "api/Shelly/24h",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ShellyReceiver.Controllers.ShellyController",
+    "Method": "RecibirDatos",
+    "RelativePath": "api/Shelly/datos",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "data",
+        "Type": "ShellyReceiver.Models.ShellyData",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ShellyReceiver.Controllers.ShellyController",
+    "Method": "ObtenerUltimos",
+    "RelativePath": "api/Shelly/ultimos",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  }
+]

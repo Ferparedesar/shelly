@@ -1,0 +1,198 @@
+﻿@{
+    ViewData["Title"] = "Dashboard Shelly";
+}
+
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+        background: #f7f9fc;
+        padding: 20px;
+        color: #333;
+    }
+
+    h2 {
+        font-weight: 600;
+        font-size: 26px;
+        margin-bottom: 20px;
+        color: #222;
+    }
+
+    h3 {
+        font-weight: 600;
+        font-size: 20px;
+        margin-bottom: 12px;
+        color: #333;
+    }
+
+    h4 {
+        font-weight: 500;
+        font-size: 15px;
+        margin-top: 10px;
+        margin-bottom: 8px;
+        color: #555;
+    }
+
+    /* Tarjetas estilo Google */
+    .card {
+        background: white;
+        border-radius: 12px;
+        padding: 18px;
+        margin-bottom: 22px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+        border: 1px solid #e5e7eb;
+    }
+
+    /* Botones Modernos */
+    button {
+        background: #3b82f6;
+        color: white;
+        border: none;
+        padding: 10px 18px;
+        margin-right: 8px;
+        border-radius: 8px;
+        font-size: 14px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: 0.2s;
+    }
+
+        button:hover {
+            background: #1e67e7;
+            box-shadow: 0px 4px 10px rgba(59,130,246,0.3);
+        }
+
+        button:active {
+            transform: scale(0.96);
+        }
+</style>
+
+<h2>Consumo Eléctrico — Hospital Minsa</h2>
+
+<div style="margin-bottom:15px;">
+    <button onclick="activarTiempoReal()">Tiempo real</button>
+    <button onclick="cargar24h()">Últimas 24h</button>
+    <button onclick="window.location='/Home/Estadisticas'">📊 Estadísticas</button>
+
+
+</div>
+
+<div class="card">
+    <h3>Laboratorio Bioquímica</h3>
+
+    <h4>Analizador</h4>
+    <canvas id="graficoShelly1" height="70"></canvas>
+
+    <h4>Agitador</h4>
+    <canvas id="graficoShelly2" height="70"></canvas>
+</div>
+
+<div class="card">
+    <h3>Laboratorio Hematologia</h3>
+
+    <h4>Microscopio</h4>
+    <canvas id="graficoShelly3" height="70"></canvas>
+
+    <h4>Centrifuga</h4>
+    <canvas id="graficoShelly4" height="70"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    let autoRefresh = true;
+    let graficos = {};
+    let intervalo = null;
+
+    activarTiempoReal();
+
+    function activarTiempoReal() {
+        autoRefresh = true;
+        cargarDatos();
+    }
+
+    async function cargarDatos() {
+        const resp = await fetch('/api/shelly/ultimos');
+        const datos = await resp.json();
+
+        const s1 = datos.filter(x => x.idDispositivo === "00000001");
+        const s2 = datos.filter(x => x.idDispositivo === "00000002");
+
+        actualizarGrafico("graficoShelly1", s1);
+        actualizarGrafico("graficoShelly2", s2);
+        actualizarGrafico("graficoShelly3", s1);
+        actualizarGrafico("graficoShelly4", s2);
+    }
+
+    function actualizarGrafico(id, data) {
+        const labels = data.map(d => new Date(d.fecha + "Z")
+             .toLocaleTimeString("es-PE", { timeZone:"America/Lima" })
+        ).reverse();
+
+        const volt = data.map(d => d.voltage).reverse();
+        const watt = data.map(d => d.apower).reverse();
+        const temp = data.map(d => d.temperature).reverse();
+
+        if (!graficos[id]) {
+            const ctx = document.getElementById(id).getContext("2d");
+            graficos[id] = new Chart(ctx, {
+                type: "line",
+                data: {
+                    labels,
+                    datasets: [
+                        { label: "Voltaje (V)", data: volt, borderColor: "#2563eb", tension: 0.3 },
+                        { label: "Potencia (W)", data: watt, borderColor: "#dc2626", tension: 0.3 },
+                        { label: "Temp (°C)", data: temp, borderColor: "#f59e0b", tension: 0.3 }
+                    ]
+                }
+            });
+        } else {
+            graficos[id].data.labels = labels;
+            graficos[id].data.datasets[0].data = volt;
+            graficos[id].data.datasets[1].data = watt;
+            graficos[id].data.datasets[2].data = temp;
+            graficos[id].update();
+        }
+    }
+
+    intervalo = setInterval(() => {
+        if (autoRefresh) cargarDatos();
+    }, 5000);
+
+    async function cargar24h() {
+        autoRefresh = false;
+        const r = await fetch("/api/shelly/24h");
+        const { datos } = await r.json();
+
+        const s1 = datos.filter(d => d.idDispositivo === "00000001");
+        const s2 = datos.filter(d => d.idDispositivo === "00000002");
+
+        function pack(arr) {
+            return {
+                labels: arr.map(d => new Date(d.fecha + "Z").toLocaleString("es-PE",{timeZone:"America/Lima"})),
+                volt: arr.map(d => d.voltage),
+                watt: arr.map(d => d.apower),
+                temp: arr.map(d => d.temperature)
+            };
+        }
+
+        const d1 = pack(s1), d2 = pack(s2);
+
+        function apply(id, d) {
+            graficos[id].data.labels = d.labels;
+            graficos[id].data.datasets = [
+                { label:"Voltaje (V) - 24h", data:d.volt, borderColor:"#2563eb", tension:0.3 },
+                { label:"Potencia (W) - 24h", data:d.watt, borderColor:"#dc2626", tension:0.3 },
+                { label:"Temp (°C) - 24h", data:d.temp, borderColor:"#f59e0b", tension:0.3 }
+            ];
+            graficos[id].update();
+        }
+
+        apply("graficoShelly1", d1);
+        apply("graficoShelly2", d2);
+        apply("graficoShelly3", d1);
+        apply("graficoShelly4", d2);
+    }
+</script>

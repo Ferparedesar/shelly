@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- https://go.microsoft.com/fwlink/?LinkID=208121. -->
+<Project>
+  <PropertyGroup>
+    <_PublishTargetUrl>C:\desarrollos\Shelly\ShellyReceiver\bin\Release\net8.0\publish\</_PublishTargetUrl>
+    <History>True|2025-11-09T01:45:36.2953587Z||;True|2025-11-08T20:45:33.2761482-05:00||;True|2025-11-08T20:45:04.7883270-05:00||;True|2025-11-08T20:09:21.8417851-05:00||;True|2025-11-03T01:30:46.2909167-05:00||;True|2025-10-15T22:47:05.2762881-05:00||;True|2025-10-14T20:52:29.5561287-05:00||;True|2025-10-14T03:18:32.5997524-05:00||;True|2025-10-14T02:52:16.8867782-05:00||;True|2025-10-14T02:35:10.0562073-05:00||;True|2025-10-14T02:34:34.4975091-05:00||;True|2025-10-14T02:14:32.3439022-05:00||;True|2025-10-14T02:02:36.2629234-05:00||;True|2025-10-14T01:48:23.5323295-05:00||;True|2025-10-14T00:06:06.3863662-05:00||;</History>
+    <LastFailureDetails />
+  </PropertyGroup>
+  <ItemGroup>
+    <File Include="Models/ShellyData.cs">
+      <publishTime>10/14/2025 02:13:54</publishTime>
+    </File>
+  </ItemGroup>
+</Project>
