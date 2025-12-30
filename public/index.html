@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shelly Dashboard - Control y Estadísticas</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-container">
+        <div class="login-box">
+            <h1>🏠 Shelly Dashboard</h1>
+            <h2>Iniciar Sesión</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Usuario</label>
+                    <input type="text" id="username" name="username" value="admin" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Contraseña</label>
+                    <input type="password" id="password" name="password" value="admin123" required>
+                </div>
+                <div id="loginError" class="error-message" style="display: none;"></div>
+                <button type="submit" class="btn btn-primary">Entrar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div id="dashboard" style="display: none;">
+        <!-- Header -->
+        <header class="header">
+            <div class="container">
+                <h1>🏠 Shelly Dashboard</h1>
+                <div class="user-info">
+                    <span id="userName"></span>
+                    <button id="logoutBtn" class="btn btn-secondary">Cerrar Sesión</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="container">
+            <!-- Summary Cards -->
+            <div class="summary-grid">
+                <div class="card stat-card">
+                    <div class="card-icon">📱</div>
+                    <div class="card-content">
+                        <h3>Dispositivos Totales</h3>
+                        <p class="stat-value" id="totalDevices">0</p>
+                    </div>
+                </div>
+
+                <div class="card stat-card">
+                    <div class="card-icon">🟢</div>
+                    <div class="card-content">
+                        <h3>Dispositivos Activos</h3>
+                        <p class="stat-value" id="activeDevices">0</p>
+                    </div>
+                </div>
+
+                <div class="card stat-card">
+                    <div class="card-icon">⚡</div>
+                    <div class="card-content">
+                        <h3>Consumo Actual</h3>
+                        <p class="stat-value"><span id="totalPower">0</span> W</p>
+                    </div>
+                </div>
+
+                <div class="card stat-card">
+                    <div class="card-icon">📊</div>
+                    <div class="card-content">
+                        <h3>Energía (24h)</h3>
+                        <p class="stat-value"><span id="totalEnergy">0</span> kWh</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="charts-section">
+                <div class="card chart-card">
+                    <h3>📈 Consumo de Energía (Últimas 24 horas)</h3>
+                    <canvas id="powerChart"></canvas>
+                </div>
+
+                <div class="card chart-card">
+                    <h3>🌡️ Temperatura y Humedad</h3>
+                    <canvas id="sensorChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Devices Section -->
+            <div class="card">
+                <h3>🎛️ Control de Dispositivos</h3>
+                <div id="devicesList" class="devices-grid"></div>
+            </div>
+
+            <!-- Events Section -->
+            <div class="card">
+                <h3>📋 Eventos Recientes</h3>
+                <div id="eventsList" class="events-list"></div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
